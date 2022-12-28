@@ -4,6 +4,33 @@
 
 {% block content %}
 
-    <h1>Tweet Me App homepage</h1>
+    <div id="tweets"></div>
 
 {% endblock content %}
+
+{% block scriptLinks %}
+    <script type="text/javascript">
+        const tweetsElement = document.getElementById("tweets")
+
+        const xhr = new XMLHttpRequest()
+
+        xhr.responseType = 'json'
+        xhr.open('GET', '/tweets')
+        xhr.onload = () => {
+            const serverResponse = xhr.response
+            const listedItems = serverResponse.response
+            listedItems.forEach(t => {
+                const div = document.createElement('div')
+                div.setAttribute('class', 'tweet')
+                const header = document.createElement('h1')
+                const para = document.createElement('p')
+                header.innerHTML = t.id
+                para.innerHTML = t.content
+                div.append(header)
+                div.append(para)
+                tweetsElement.append(div)
+            })
+        }
+        xhr.send()
+    </script>
+{% endblock scriptLinks %}
