@@ -20,17 +20,48 @@
             const serverResponse = xhr.response
             const listedItems = serverResponse.response
             listedItems.forEach(t => {
-                const div = document.createElement('div')
-                div.setAttribute('class', 'tweet')
-                const header = document.createElement('h1')
-                const para = document.createElement('p')
-                header.innerHTML = t.id
-                para.innerHTML = t.content
-                div.append(header)
-                div.append(para)
-                tweetsElement.append(div)
+                tweetsElement.append(tweet_view_format(t))
             })
         }
         xhr.send()
+
+        function tweet_view_format(tweet) {
+            const div = createElement('div', {class: 'tweet mb-4', id: 'tweet-' + tweet.id})
+            const header = createElement('h1', {content: tweet.id})
+            const para = createElement('p', {content: tweet.content})
+            para.append(likeBtn(tweet))
+            div.append(header)
+            div.append(para)
+            console.log(div)
+            return div
+        }
+
+        function handleDidLike(tweet_id, currentCount) {
+            console.log(tweet_id, currentCount)
+        }
+
+        function likeBtn(tweet) {
+            const btn = createElement('button', {
+                class: 'btn btn-primary btn-small',
+                content: tweet.likes + ` like${tweet.likes > 1 ? 's' : ''}`,
+                onclick:"handleDidLike(" + tweet.id +","+ tweet.likes+")"
+            })
+            const div = createElement('div', {class: 'btn-group'})
+            const para = createElement('p')
+            div.append(btn)
+            para.append(div)
+            return para
+        }
+
+        function createElement(elementName, attributes) {
+            const element = document.createElement(elementName)
+            if (attributes !== undefined)
+                for (const attr in attributes) {
+                    Object.hasOwn(attributes, 'content') && attr === 'content' ?
+                        element.innerHTML = attributes[attr] :
+                        element.setAttribute(attr, attributes[attr])
+                }
+            return element
+        }
     </script>
 {% endblock scriptLinks %}
